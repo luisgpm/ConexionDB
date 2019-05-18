@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,6 +25,11 @@ public class Persona extends javax.swing.JFrame
 
     public static PreparedStatement reg;
     public static Connection con;
+    String datos[] = new String[8];
+    Statement s;
+    
+    boolean modi=false;
+
 
     /**
      * Creates new form Persona
@@ -73,6 +80,8 @@ public class Persona extends javax.swing.JFrame
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         IdBuscar_tf = new javax.swing.JTextField();
+        elimina_btn = new javax.swing.JButton();
+        modificar = new javax.swing.JButton();
 
         jCheckBox2.setText("jCheckBox2");
 
@@ -87,6 +96,14 @@ public class Persona extends javax.swing.JFrame
         jLabel2.setText("telefono");
 
         jLabel3.setText("correo");
+
+        tel_tf.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                tel_tfActionPerformed(evt);
+            }
+        });
 
         correo_tf.addActionListener(new java.awt.event.ActionListener()
         {
@@ -167,38 +184,63 @@ public class Persona extends javax.swing.JFrame
 
         jLabel6.setText("ID:");
 
+        elimina_btn.setText("eliminar");
+        elimina_btn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                elimina_btnActionPerformed(evt);
+            }
+        });
+
+        modificar.setText("modificar");
+        modificar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                modificarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(414, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(91, 91, 91))
+            .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(apellido_lb)
-                        .addComponent(nombre_lb))
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(14, 14, 14))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel6)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(estudio_Combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(correo_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(tel_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(nombre_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(ape_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(apellido_lb)
+                                .addComponent(nombre_lb))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(52, 52, 52)
+                        .addComponent(consultar_btn)))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 25, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addGap(14, 14, 14))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(estudio_Combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(correo_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tel_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nombre_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ape_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 44, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(layout.createSequentialGroup()
@@ -215,22 +257,20 @@ public class Persona extends javax.swing.JFrame
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jrb_masc)
                                         .addGap(36, 36, 36)
-                                        .addComponent(jrb_fem))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(IdBuscar_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(20, 20, 20))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(consultar_btn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Buscar_btn)
-                .addGap(91, 91, 91))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(405, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(91, 91, 91))
-            .addComponent(jScrollPane1)
+                                        .addComponent(jrb_fem)))))
+                        .addGap(20, 20, 20))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(IdBuscar_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Buscar_btn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(elimina_btn)
+                        .addGap(18, 18, 18)
+                        .addComponent(modificar)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,7 +324,9 @@ public class Persona extends javax.swing.JFrame
                     .addComponent(consultar_btn)
                     .addComponent(Buscar_btn)
                     .addComponent(jLabel6)
-                    .addComponent(IdBuscar_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(IdBuscar_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(elimina_btn)
+                    .addComponent(modificar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -362,6 +404,17 @@ public class Persona extends javax.swing.JFrame
 
     }//GEN-LAST:event_jButton1ActionPerformed
     
+    public void rellenar()
+    {
+        if (datos!=null)
+        {
+            nombre_tf.setText(datos[1]);
+            ape_tf.setText(datos[2]);
+            tel_tf.setText(datos[3]);
+            correo_tf.setText(datos[4]);
+        }
+    }
+    
     public void limpiarCampos()
     {
         nombre_tf.setText("");
@@ -372,7 +425,7 @@ public class Persona extends javax.swing.JFrame
         
     }
     
-    public void consulta(String id)
+    public DefaultTableModel modelo()
     {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("ID");
@@ -383,7 +436,16 @@ public class Persona extends javax.swing.JFrame
         modelo.addColumn("Nivel Estudio");
         modelo.addColumn("Sexo");
         modelo.addColumn("Intereses");
-        jTable1.setModel(modelo);
+        jTable1.setModel(modelo); 
+        return modelo;
+        
+    }
+    
+    public void consulta(String id)
+    {
+        
+       DefaultTableModel modelo= modelo();
+       
         
         String sql = "";
         
@@ -393,18 +455,22 @@ public class Persona extends javax.swing.JFrame
         } else
         {
             sql = "select * from datos where id = '" + id + "'";
+            if (modi)
+            {
+                modi=false;
+            }
+            
         }
         
-        String datos[] = new String[8];
         
         Statement st;
-        Conexion conect = new Conexion();
-        con = conect.conectar();
         
+         conectar();
         try
         {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
+
             while (rs.next())
             {
                 datos[0] = rs.getString(1);
@@ -417,6 +483,8 @@ public class Persona extends javax.swing.JFrame
                 datos[7] = rs.getString(8);
                 modelo.addRow(datos);
             }
+            con.close();
+
             
             jTable1.setModel(modelo);
         } catch (SQLException e)
@@ -424,7 +492,98 @@ public class Persona extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "error Persona.consulta()......");
         }
         
+        
     }
+    
+    public void actualizar(int id) 
+    {
+        conectar();
+        String sql ="";
+        try
+        {
+            s=con.createStatement();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(Persona.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        String sex="";
+        String intereses="";
+        String nvl_est= (String)estudio_Combo.getSelectedItem();
+
+        if (jrb_fem.isSelected()==true)
+        {
+            sex="femenino";
+        }
+        else
+        {
+            sex="masculino";
+        }
+        
+        
+        if (libros_CB.isSelected())
+        {
+            intereses+="libros";
+        }
+        if (peliculas_Cb.isSelected())
+        {
+            intereses+="peliculas";
+        }
+        if (ejercicio_CB.isSelected())
+        {
+            intereses+="ejercicio";
+        }
+        if (musica_CB.isSelected())
+        {
+            intereses+="musica";
+        }
+        sql = "UPDATE datos set nombre='"+nombre_tf.getText()+"',"+"apellido='"+
+                    ape_tf.getText()+"',correo='"+correo_tf.getText()+"',intereses='"+intereses+"',nvl_estudio='"
+               + nvl_est+"',sexo='"+sex+"',telefono='"+tel_tf.getText()+"' where id= "+id+";";
+
+        try
+        {
+            s.execute(sql);
+            con.close();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(Persona.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void conectar()
+    {
+        Conexion conect = new Conexion();
+        con = conect.conectar();
+    }
+    
+     public void eliminar(int id)    
+    {
+        conectar();
+        
+        try
+        {
+            s=con.createStatement();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(Persona.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try
+        {
+            String sql= "DELETE FROM datos WHERE id="+id+";";
+            s.execute(sql);
+            con.close();
+            JOptionPane.showMessageDialog(null, "se eliino un registro");
+            DefaultTableModel modelo= modelo();
+            jTable1.setModel(modelo);
+            
+            
+        } catch (SQLException ex)
+        {
+            System.out.println("error al eliminar registro  un registro");
+        }
+        
+    }
+
     private void correo_tfActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_correo_tfActionPerformed
     {//GEN-HEADEREND:event_correo_tfActionPerformed
         // TODO add your handling code here:
@@ -452,8 +611,30 @@ public class Persona extends javax.swing.JFrame
         }else
         {
         consulta(id);
+        rellenar();
         }
     }//GEN-LAST:event_Buscar_btnActionPerformed
+
+    private void elimina_btnActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_elimina_btnActionPerformed
+    {//GEN-HEADEREND:event_elimina_btnActionPerformed
+        int id = Integer.parseInt(IdBuscar_tf.getText());
+        // TODO add your handling code here:
+        
+        eliminar(id);
+    }//GEN-LAST:event_elimina_btnActionPerformed
+
+    private void modificarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_modificarActionPerformed
+    {//GEN-HEADEREND:event_modificarActionPerformed
+        // TODO add your handling code here:
+        int id=Integer.parseInt(IdBuscar_tf.getText());
+        actualizar(id);
+       
+    }//GEN-LAST:event_modificarActionPerformed
+
+    private void tel_tfActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_tel_tfActionPerformed
+    {//GEN-HEADEREND:event_tel_tfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tel_tfActionPerformed
 
     /**
      * @param args the command line arguments
@@ -509,6 +690,7 @@ public class Persona extends javax.swing.JFrame
     private javax.swing.JButton consultar_btn;
     private javax.swing.JTextField correo_tf;
     private javax.swing.JCheckBox ejercicio_CB;
+    private javax.swing.JButton elimina_btn;
     private javax.swing.JComboBox<String> estudio_Combo;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox2;
@@ -524,6 +706,7 @@ public class Persona extends javax.swing.JFrame
     private javax.swing.JRadioButton jrb_fem;
     private javax.swing.JRadioButton jrb_masc;
     private javax.swing.JCheckBox libros_CB;
+    private javax.swing.JButton modificar;
     private javax.swing.JCheckBox musica_CB;
     private javax.swing.JLabel nombre_lb;
     private javax.swing.JTextField nombre_tf;
